@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — FynFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #07070F;
+  --surface: #0F0F1C;
+  --elevated: #161626;
+  --border: rgba(255,255,255,0.07);
+  --purple: #7C5CFC;
+  --purple-light: #A78BFA;
+  --green: #00D4A0;
+  --amber: #FFB830;
+  --coral: #FF6B4A;
+  --text: #EEEEFF;
+  --muted: #6666AA;
+  --dimmed: #33335A;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+  padding: 24px;
+}
+
+/* BACKGROUND */
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(124,92,252,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,92,252,0.055) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,0.13) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.bg-glow-green {
+  position: fixed;
+  width: 350px; height: 350px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,160,0.07) 0%, transparent 70%);
+  bottom: 5%; right: 5%; pointer-events: none;
+}
+
+.bg-glow-purple {
+  position: fixed;
+  width: 250px; height: 250px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,0.08) 0%, transparent 70%);
+  top: 10%; left: 5%; pointer-events: none;
+}
+
+/* CARD ENTRANCE */
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* CARD */
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 40px 40px 36px;
+  width: 100%; max-width: 460px;
+  position: relative; z-index: 10;
+  text-align: center;
+  animation: cardEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; border-radius: 28px 28px 0 0;
+  background: linear-gradient(90deg, var(--purple), var(--purple-light), var(--green));
+}
+
+/* LOGO */
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.login-logo-icon { width: 48px; height: 48px; flex-shrink: 0; }
+.login-logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; letter-spacing: 5px; line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, var(--purple-light) 55%, var(--green) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-tagline {
+  font-size: 13px; color: var(--muted); font-weight: 300;
+  margin-bottom: 20px; letter-spacing: 0.02em;
+}
+
+/* BADGE */
+.badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.25);
+  border-radius: 999px; padding: 5px 14px;
+  font-size: 11px; font-weight: 500; color: var(--purple-light);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green); animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* HEADING AREA */
+.heading-area {
+  margin-bottom: 20px;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.heading-area.fading {
+  opacity: 0; transform: translateY(-6px);
+}
+
+.login-heading {
+  font-size: 22px; font-weight: 600; color: var(--text);
+  margin-bottom: 8px;
+}
+
+.login-subtext {
+  font-size: 14px; color: var(--muted); font-weight: 300;
+  line-height: 1.65;
+}
+
+/* FORMS CONTAINER */
+.forms-container {
+  overflow: hidden;
+  transition: height 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* FORM PANELS */
+.form-panel {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.form-panel.hidden {
+  display: none; opacity: 0;
+}
+
+.form-panel.exit-up {
+  opacity: 0; transform: translateY(-14px);
+}
+
+.form-panel.enter-down {
+  opacity: 0; transform: translateY(14px);
+}
+
+/* FORM ELEMENTS */
+.login-form { width: 100%; margin-bottom: 12px; }
+
+.form-group { text-align: left; margin-bottom: 14px; }
+
+.form-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: var(--muted); margin-bottom: 6px; letter-spacing: 0.03em;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 14px; font-family: 'Outfit', sans-serif;
+  color: var(--text); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-input::placeholder { color: var(--dimmed); }
+
+.form-input:focus {
+  border-color: rgba(124,92,252,0.5);
+  box-shadow: 0 0 0 3px rgba(124,92,252,0.1);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '▾';
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted); pointer-events: none;
+  font-size: 12px;
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+select.form-input option {
+  background: var(--elevated);
+  color: var(--text);
+}
+
+.form-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+
+.forgot-link {
+  font-size: 12px; color: var(--purple-light);
+  text-decoration: none; font-weight: 500;
+  transition: opacity 0.2s; background: none; border: none;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+}
+.forgot-link:hover { opacity: 0.75; }
+
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--purple), #5a3fc0);
+  color: white; padding: 15px 32px; border-radius: 14px;
+  font-size: 16px; font-weight: 600; font-family: 'Outfit', sans-serif;
+  border: none; cursor: pointer; margin-top: 4px;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  box-shadow: 0 8px 32px rgba(124,92,252,0.35);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(124,92,252,0.48);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6; cursor: not-allowed; transform: none;
+}
+
+.btn-outline {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; background: transparent; color: var(--muted);
+  padding: 13px 32px; border-radius: 14px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none; border: 1px solid var(--border);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  margin-top: 10px; cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+
+.btn-outline:hover {
+  border-color: rgba(124,92,252,0.35);
+  color: var(--text);
+  background: rgba(124,92,252,0.04);
+}
+
+/* SPINNER */
+.spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-submit.loading .spinner { display: block; }
+.btn-submit.loading .btn-label { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ALERT */
+.alert {
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 13px; font-weight: 500; text-align: left;
+  margin-bottom: 14px; display: none;
+  line-height: 1.5;
+}
+
+.alert.error {
+  background: rgba(255,107,74,0.12);
+  border: 1px solid rgba(255,107,74,0.3);
+  color: #FF8A70;
+  display: block;
+}
+
+.alert.success {
+  background: rgba(0,212,160,0.1);
+  border: 1px solid rgba(0,212,160,0.25);
+  color: var(--green);
+  display: block;
+}
+
+/* DIVIDER */
+.divider-row {
+  display: flex; align-items: center; gap: 14px;
+  margin: 20px 0 16px;
+}
+
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+
+.divider-label {
+  font-size: 11px; color: var(--dimmed);
+  white-space: nowrap; letter-spacing: 0.04em;
+}
+
+/* FEATURE CHIPS */
+.feature-chips {
+  display: flex; justify-content: center;
+  gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+}
+
+.chip {
+  background: var(--elevated); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 13px;
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+}
+
+/* LANGUAGE ROW */
+.lang-section { margin-bottom: 28px; }
+
+.lang-label-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+
+.lang-label-line { flex: 1; height: 1px; background: var(--border); }
+
+.lang-label-text {
+  font-size: 10px; color: var(--dimmed);
+  text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap;
+}
+
+.lang-flags {
+  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+}
+
+.lang-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--elevated); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 12px;
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+}
+
+.lang-pill.primary {
+  border-color: rgba(124,92,252,0.35);
+  color: var(--purple-light);
+  background: rgba(124,92,252,0.08);
+}
+
+/* FOOTER TEXT */
+.login-footer-text {
+  font-size: 12px; color: var(--dimmed); line-height: 1.8;
+}
+
+.login-footer-text a {
+  color: var(--purple-light); text-decoration: none; transition: opacity 0.2s;
+}
+.login-footer-text a:hover { opacity: 0.8; }
+
+/* SIDE CARDS */
+.side-cards {
+  position: fixed; right: 48px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 12px; z-index: 5;
+}
+
+.side-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 18px; width: 200px; opacity: 0.55;
+  animation: cardEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.side-card:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
+.side-card:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
+.side-card:nth-child(3) { animation-delay: 0.3s; opacity: 0; }
+
+.side-card-label {
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+}
+
+.side-card-value {
+  font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500;
+}
+
+.side-card-sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+.side-cards-left {
+  position: fixed; left: 48px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 12px; z-index: 5;
+}
+
+.side-cards-left .side-card:nth-child(1) { animation-delay: 0.15s; }
+.side-cards-left .side-card:nth-child(2) { animation-delay: 0.25s; }
+.side-cards-left .side-card:nth-child(3) { animation-delay: 0.35s; }
+
+@media (max-width: 1100px) {
+  .side-cards, .side-cards-left { display: none; }
+}
+
+@media (max-width: 520px) {
+  .login-card { padding: 36px 24px 28px; }
+  .login-logo { font-size: 46px; }
+  body { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow-green"></div>
+<div class="bg-glow-purple"></div>
+
+<!-- LEFT SIDE CARDS -->
+<div class="side-cards-left">
+  <div class="side-card">
+    <div class="side-card-label">Committee — Month 3</div>
+    <div class="side-card-value" style="color: var(--purple-light);">PKR 100,000</div>
+    <div class="side-card-sub">Sara gets payout this month ★</div>
+  </div>
+  <div class="side-card">
+    <div class="side-card-label">Gold 24k · per tola</div>
+    <div class="side-card-value" style="color: var(--amber);">PKR 225,000</div>
+    <div class="side-card-sub">↑ +1.2% since yesterday</div>
+  </div>
+  <div class="side-card">
+    <div class="side-card-label">Zakat 1446 AH</div>
+    <div class="side-card-value" style="color: var(--green);">PKR 23,437</div>
+    <div class="side-card-sub">Due this year · Nisab exceeded</div>
+  </div>
+</div>
+
+<!-- RIGHT SIDE CARDS -->
+<div class="side-cards">
+  <div class="side-card">
+    <div class="side-card-label">Net Worth</div>
+    <div class="side-card-value" style="color: var(--green);">PKR 1.24M</div>
+    <div class="side-card-sub">↑ +8.4% this month</div>
+  </div>
+  <div class="side-card">
+    <div class="side-card-label">Savings Rate</div>
+    <div class="side-card-value" style="color: var(--purple-light);">49.3%</div>
+    <div class="side-card-sub">Above your 45% goal</div>
+  </div>
+  <div class="side-card">
+    <div class="side-card-label">Murree Trip Split</div>
+    <div class="side-card-value" style="color: var(--coral);">PKR 2,400</div>
+    <div class="side-card-sub">Ahmad Khan owes you</div>
+  </div>
+</div>
+
+<!-- LOGIN CARD -->
+<div class="login-card">
+  <a href="index.html" class="login-logo">
+    <img src="fynflow-logo.png" class="login-logo-icon" alt="FynFlow">
+    <span class="login-logo-text">FynFlow</span>
+  </a>
+  <div class="login-tagline">AI That Understands Your Money</div>
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    AI Finance OS
+  </div>
+
+  <!-- Heading — swaps on form change -->
+  <div class="heading-area" id="headingArea">
+    <div class="login-heading" id="formHeading">Welcome back</div>
+    <div class="login-subtext" id="formSubtext">Sign in to manage your finances, committees, and Zakat — all in one intelligent place.</div>
+  </div>
+
+  <!-- FORMS CONTAINER -->
+  <div class="forms-container" id="formsContainer">
+
+    <!-- ── LOGIN PANEL ── -->
+    <div class="form-panel" id="loginPanel">
+      <div class="alert" id="loginAlert"></div>
+      <form class="login-form" id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email address</label>
+          <input class="form-input" type="email" id="loginEmail" name="email"
+            placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <div class="form-row">
+            <label class="form-label" for="loginPassword" style="margin-bottom:0;">Password</label>
+            <button type="button" class="forgot-link" onclick="handleForgotPassword()">Forgot password?</button>
+          </div>
+          <input class="form-input" type="password" id="loginPassword" name="password"
+            placeholder="••••••••" autocomplete="current-password" style="margin-top:6px;">
+        </div>
+        <button type="submit" class="btn-submit" id="loginBtn">
+          <span class="spinner"></span>
+          <span class="btn-label">Sign in to FynFlow →</span>
+        </button>
+      </form>
+      <button class="btn-outline" onclick="switchForm('register')">Don't have an account? Create one free</button>
+    </div>
+
+    <!-- ── REGISTER PANEL ── -->
+    <div class="form-panel hidden" id="registerPanel">
+      <div class="alert" id="registerAlert"></div>
+      <form class="login-form" id="registerForm" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="regName">Full name</label>
+          <input class="form-input" type="text" id="regName" name="name"
+            placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email address</label>
+          <input class="form-input" type="email" id="regEmail" name="email"
+            placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regCurrency">Currency</label>
+          <div class="select-wrapper">
+            <select class="form-input" id="regCurrency" name="currency">
+              <option value="PKR" selected>PKR — Pakistani Rupee</option>
+              <option value="USD">USD — US Dollar</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — British Pound</option>
+              <option value="AED">AED — UAE Dirham</option>
+              <option value="SAR">SAR — Saudi Riyal</option>
+              <option value="CAD">CAD — Canadian Dollar</option>
+              <option value="AUD">AUD — Australian Dollar</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Password</label>
+          <input class="form-input" type="password" id="regPassword" name="password"
+            placeholder="Min. 6 characters" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regConfirm">Confirm password</label>
+          <input class="form-input" type="password" id="regConfirm" name="confirm_password"
+            placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-submit" id="registerBtn">
+          <span class="spinner"></span>
+          <span class="btn-label">Create my FynFlow account →</span>
+        </button>
+      </form>
+      <button class="btn-outline" onclick="switchForm('login')">Already have an account? Sign in</button>
+    </div>
+
+  </div><!-- /forms-container -->
+
+  <div class="divider-row">
+    <div class="divider-line"></div>
+    <span class="divider-label">Trusted worldwide</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="feature-chips">
+    <div class="chip">🔄 Committee</div>
+    <div class="chip">🕌 Zakat</div>
+    <div class="chip">🤖 AI Chat</div>
+    <div class="chip">💳 Splits</div>
+  </div>
+
+  <div class="lang-section">
+    <div class="lang-label-row">
+      <div class="lang-label-line"></div>
+      <span class="lang-label-text">Multi-language support</span>
+      <div class="lang-label-line"></div>
+    </div>
+    <div class="lang-flags">
+      <div class="lang-pill primary">🇵🇰 Urdu</div>
+      <div class="lang-pill">🇸🇦 Arabic</div>
+      <div class="lang-pill">🇬🇧 English</div>
+      <div class="lang-pill">🇮🇳 Hindi</div>
+      <div class="lang-pill">🇹🇷 Turkish</div>
+      <div class="lang-pill">🇧🇩 Bengali</div>
+    </div>
+  </div>
+
+  <div class="login-footer-text">
+    By signing in you agree to our
+    <a href="#">Terms of Service</a> &amp; <a href="#">Privacy Policy</a><br>
+    <a href="index.html">← Back to FynFlow.com</a>
+  </div>
+</div>
+
+<script>
+  // ── Supabase config ──────────────────────────────────────────────────────────
+  const SUPABASE_URL     = 'https://hlgetsnwczrglzsaxuue.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsZ2V0c253Y3pyZ2x6c2F4dXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjE5MzgsImV4cCI6MjA5NjQ5NzkzOH0.akbScuWSUSIs4N2RVNmB4dFjJkfXe1-o5Q-0MfWYYPs';
+
+  // After successful auth, redirect here
+  const APP_URL = 'https://app.getfynflow.com';
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  function showAlert(id, msg, type = 'error') {
+    const el = document.getElementById(id);
+    el.className = `alert ${type}`;
+    el.textContent = msg;
+  }
+
+  function clearAlert(id) {
+    const el = document.getElementById(id);
+    el.className = 'alert';
+    el.textContent = '';
+  }
+
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = loading;
+    btn.classList.toggle('loading', loading);
+  }
+
+  // ── Sign In ──────────────────────────────────────────────────────────────────
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAlert('loginAlert');
+
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showAlert('loginAlert', 'Please enter your email and password.');
+      return;
+    }
+
+    setLoading('loginBtn', true);
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      showAlert('loginAlert', error.message);
+      setLoading('loginBtn', false);
+      return;
+    }
+
+    // Signed in — redirect to app
+    window.location.href = APP_URL;
+  });
+
+  // ── Register ─────────────────────────────────────────────────────────────────
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAlert('registerAlert');
+
+    const name     = document.getElementById('regName').value.trim();
+    const email    = document.getElementById('regEmail').value.trim();
+    const currency = document.getElementById('regCurrency').value;
+    const password = document.getElementById('regPassword').value;
+    const confirm  = document.getElementById('regConfirm').value;
+
+    if (!email || !password || !confirm) {
+      showAlert('registerAlert', 'Please fill in all required fields.');
+      return;
+    }
+
+    if (password !== confirm) {
+      showAlert('registerAlert', 'Passwords do not match.');
+      return;
+    }
+
+    if (password.length < 6) {
+      showAlert('registerAlert', 'Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading('registerBtn', true);
+
+    const displayName = name || email.split('@')[0];
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: displayName },
+      },
+    });
+
+    if (error) {
+      showAlert('registerAlert', error.message);
+      setLoading('registerBtn', false);
+      return;
+    }
+
+    // Email confirmation required
+    if (data.session === null && data.user !== null) {
+      showAlert(
+        'registerAlert',
+        'Check your inbox and click the confirmation link, then sign in here.',
+        'success'
+      );
+      document.getElementById('registerForm').reset();
+      setLoading('registerBtn', false);
+      return;
+    }
+
+    // Instant session — update currency in the profile
+    if (data.session && data.user) {
+      await sb
+        .from('profiles')
+        .update({ currency })
+        .eq('id', data.user.id);
+    }
+
+    window.location.href = APP_URL;
+  });
+
+  // ── Forgot password ──────────────────────────────────────────────────────────
+  async function handleForgotPassword() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) {
+      showAlert('loginAlert', 'Enter your email address above first.');
+      return;
+    }
+    clearAlert('loginAlert');
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: APP_URL + '/reset-password',
+    });
+    if (error) {
+      showAlert('loginAlert', error.message);
+    } else {
+      showAlert('loginAlert', 'Password reset email sent. Check your inbox.', 'success');
+    }
+  }
+
+  // ── Form panel switcher ──────────────────────────────────────────────────────
+  const COPY = {
+    login: {
+      heading: 'Welcome back',
+      subtext: 'Sign in to manage your finances, committees, and Zakat — all in one intelligent place.'
+    },
+    register: {
+      heading: 'Create account',
+      subtext: 'Join FynFlow free — committees, Zakat, AI budgeting, and voice logging all in one place.'
+    }
+  };
+
+  function switchForm(to) {
+    const container   = document.getElementById('formsContainer');
+    const loginPanel  = document.getElementById('loginPanel');
+    const regPanel    = document.getElementById('registerPanel');
+    const headingArea = document.getElementById('headingArea');
+    const heading     = document.getElementById('formHeading');
+    const subtext     = document.getElementById('formSubtext');
+
+    clearAlert('loginAlert');
+    clearAlert('registerAlert');
+
+    const fromPanel = to === 'register' ? loginPanel : regPanel;
+    const toPanel   = to === 'register' ? regPanel   : loginPanel;
+
+    container.style.height = fromPanel.scrollHeight + 'px';
+    headingArea.classList.add('fading');
+    fromPanel.classList.add('exit-up');
+
+    setTimeout(() => {
+      heading.textContent = COPY[to].heading;
+      subtext.textContent = COPY[to].subtext;
+      headingArea.classList.remove('fading');
+
+      fromPanel.classList.add('hidden');
+      fromPanel.classList.remove('exit-up');
+
+      toPanel.classList.remove('hidden');
+      toPanel.classList.add('enter-down');
+
+      container.style.height = toPanel.scrollHeight + 'px';
+      void toPanel.offsetWidth;
+      toPanel.classList.remove('enter-down');
+
+      setTimeout(() => { container.style.height = 'auto'; }, 440);
+    }, 300);
+  }
+
+  // Initial height
+  window.addEventListener('load', () => {
+    const container  = document.getElementById('formsContainer');
+    const loginPanel = document.getElementById('loginPanel');
+    container.style.height = loginPanel.scrollHeight + 'px';
+    setTimeout(() => { container.style.height = 'auto'; }, 100);
+  });
+</script>
+
+</body>
+</html>
