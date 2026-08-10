@@ -137,6 +137,19 @@
   background: linear-gradient(135deg, var(--purple-light), #6a4fd0);
 }
 
+.fab-ios {
+  background: linear-gradient(135deg, #555555 0%, #333333 100%);
+  color: white;
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.fab-ios:hover {
+  background: linear-gradient(135deg, #666666 0%, #444444 100%);
+  opacity: 0.9;
+  transform: translateY(-4px) scale(1.02);
+}
+
 .fab-pulse {
   animation: pulse-glow 2s infinite, shimmer 1.5s ease-in-out infinite;
 }
@@ -1832,6 +1845,10 @@ h2 {
     <span>🚀</span>
     <span>Get Started Free</span>
   </a>
+  <button class="fab fab-ios" disabled>
+    <span>🍎</span>
+    <span>Coming Soon</span>
+  </button>
 </div>
 
 <script>
