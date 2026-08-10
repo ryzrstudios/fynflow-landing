@@ -44,26 +44,25 @@
   bottom: 32px;
   right: 32px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 16px;
   z-index: 99;
+  align-items: center;
 }
 
 .fab {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 14px 24px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 14px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  padding: 0;
   text-decoration: none;
   cursor: pointer;
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  white-space: nowrap;
   animation: slideIn 0.6s ease, float 3s ease-in-out infinite;
   position: relative;
 }
@@ -140,14 +139,18 @@
 .fab-ios {
   background: linear-gradient(135deg, #555555 0%, #333333 100%);
   color: white;
-  opacity: 0.8;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .fab-ios:hover {
   background: linear-gradient(135deg, #666666 0%, #444444 100%);
-  opacity: 0.9;
-  transform: translateY(-4px) scale(1.02);
+  opacity: 0.7;
+  transform: translateY(-4px) scale(1.05);
+}
+
+.fab svg {
+  display: block;
 }
 
 .fab-pulse {
@@ -171,9 +174,13 @@
   }
 
   .fab {
-    padding: 12px 18px;
-    font-size: 13px;
-    gap: 8px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .fab svg {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -1819,17 +1826,26 @@ h2 {
 
 <!-- Floating Action Buttons -->
 <div class="fab-container">
-  <a href="https://play.google.com/store/apps/details?id=com.ryzrstudios.fynflow&hl=en" target="_blank" class="fab fab-android fab-pulse">
-    <span>📥</span>
-    <span>Get on Google Play</span>
+  <!-- Google Play Button -->
+  <a href="https://play.google.com/store/apps/details?id=com.ryzrstudios.fynflow&hl=en" target="_blank" class="fab fab-android fab-pulse" title="Get on Google Play">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3.5 8.7C3.5 7.3 4.5 6 6.1 6c1.2 0 2.1.8 2.8 1.6L14 4.1c-.6-.8-1.8-1.4-3.2-1.4C8.4 2.7 5.5 5.5 5.5 8.8s2.9 6.1 6.3 6.1c2 0 3.5-.8 4.3-2l-2.1-1.6c-.5.7-1.5 1.2-2.2 1.2-1.6.1-2.8-1.3-2.8-2.8zm10.1-2.1l3.6 5.2h2.6L16 4.5h-2.4zm7.6 4.5c-1.2 0-2.1.6-2.5 1.5h5c0-.9-.7-1.5-2.5-1.5zm0-1.5c1.9 0 3.3 1.4 3.3 3.3 0 2-1.4 3.3-3.3 3.3s-3.3-1.4-3.3-3.3c0-1.9 1.4-3.3 3.3-3.3z"/>
+    </svg>
   </a>
-  <a href="https://app.getfynflow.com" class="fab fab-web">
-    <span>🚀</span>
-    <span>Open Web App</span>
+
+  <!-- Web App Button -->
+  <a href="https://app.getfynflow.com" class="fab fab-web" title="Open Web App">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
   </a>
-  <button class="fab fab-ios" disabled>
-    <span>🍎</span>
-    <span>Coming Soon</span>
+
+  <!-- Apple Button -->
+  <button class="fab fab-ios" disabled title="Coming Soon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M12 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+    </svg>
   </button>
 </div>
 
