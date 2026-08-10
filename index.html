@@ -38,176 +38,6 @@
   color: var(--muted);
 }
 
-/* Floating Action Buttons */
-.fab-container {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  z-index: 99;
-  align-items: center;
-}
-
-.fab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  padding: 0;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  animation: slideIn 0.6s ease, float 3s ease-in-out infinite;
-  position: relative;
-  gap: 4px;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-  50% {
-    box-shadow: 0 12px 32px rgba(255,255,255,0.2), 0 8px 24px rgba(0,0,0,0.3);
-  }
-  100% {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-}
-
-.fab svg {
-  transition: opacity 0.3s ease;
-}
-
-.fab-label {
-  font-size: 10px;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  white-space: nowrap;
-  color: white;
-  text-align: center;
-  line-height: 1.2;
-}
-
-.fab:hover {
-  transform: translateY(-8px) scale(1.08) rotate(2deg);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-}
-
-.fab:hover svg {
-  opacity: 0;
-}
-
-.fab:hover .fab-label {
-  opacity: 1;
-}
-
-.fab svg:first-child {
-  animation: bounce 0.8s ease-in-out infinite;
-  display: inline-block;
-}
-
-.fab-android {
-  background: linear-gradient(135deg, #3DDC84 0%, #1DB954 100%);
-  color: white;
-}
-
-.fab-android:hover {
-  background: linear-gradient(135deg, #4DE894 0%, #2AC964 100%);
-}
-
-.fab-web {
-  background: linear-gradient(135deg, var(--purple), #5a3fc0);
-  color: white;
-}
-
-.fab-web:hover {
-  background: linear-gradient(135deg, var(--purple-light), #6a4fd0);
-}
-
-.fab-ios {
-  background: linear-gradient(135deg, #555555 0%, #333333 100%);
-  color: white;
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.fab-ios:hover {
-  background: linear-gradient(135deg, #666666 0%, #444444 100%);
-  opacity: 0.7;
-  transform: translateY(-4px) scale(1.05);
-}
-
-.fab svg {
-  display: block;
-}
-
-.fab-pulse {
-  animation: pulse-glow 2s infinite, shimmer 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 8px 24px rgba(61,220,132,0.6), inset 0 0 20px rgba(255,255,255,0.2);
-  }
-  50% {
-    box-shadow: 0 12px 40px rgba(61,220,132,0.8), inset 0 0 20px rgba(255,255,255,0.4);
-  }
-}
-
-@media (max-width: 768px) {
-  .fab-container {
-    bottom: 20px;
-    right: 20px;
-    gap: 12px;
-  }
-
-  .fab {
-    width: 52px;
-    height: 52px;
-  }
-
-  .fab svg {
-    width: 24px;
-    height: 24px;
-  }
-}
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -991,161 +821,179 @@ h2 {
   border-radius: 16px;
 }
 
-/* PLATFORM AVAILABILITY */
-.platforms-section {
-  margin-bottom: 32px;
-}
-
-.platforms-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.platform-card {
+/* FLOATING PLATFORM BUTTONS */
+.fab-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
   display: flex;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 99;
+  align-items: flex-end;
+}
+
+.fab {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: var(--elevated);
-  border: 1px solid rgba(124,92,252,0.15);
-  border-radius: 16px;
+  gap: 8px;
   text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
   cursor: default;
-  animation: platformFadeIn 0.5s ease-out forwards;
-  opacity: 0;
+  border: none;
+  padding: 0;
+  background: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.platform-card-web { animation-delay: 0ms; }
-.platform-card-ios { animation-delay: 80ms; }
-.platform-card-android { animation-delay: 160ms; }
-
-@keyframes platformFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.platform-card-web,
-.platform-card-android {
-  cursor: pointer;
-}
-
-.platform-card-web:hover,
-.platform-card-android:hover {
-  border-color: rgba(124,92,252,0.35);
-  background: rgba(124,92,252,0.05);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(124,92,252,0.1);
-}
-
-.platform-card-ios {
-  opacity: 0.7;
-}
-
-.platform-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+.fab-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(124,92,252,0.2);
   transition: all 0.3s ease;
+  cursor: inherit;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
   color: var(--text);
 }
 
-.platform-card-web .platform-icon {
-  color: var(--blue);
+.fab-web .fab-button {
+  background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(124,92,252,0.05));
+  border-color: rgba(124,92,252,0.3);
+  box-shadow: 0 12px 32px rgba(124,92,252,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-.platform-card-ios .platform-icon {
-  color: var(--text);
+.fab-android .fab-button {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(52,168,83,0.2);
 }
 
-.platform-card-android .platform-icon {
-  color: #34A853;
+.fab-ios .fab-button {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+  opacity: 0.7;
 }
 
-.platform-card-web:hover .platform-icon,
-.platform-card-android:hover .platform-icon {
-  transform: scale(1.1);
-  background: rgba(124,92,252,0.15);
-}
-
-.platform-content {
-  flex: 1;
-  text-align: left;
-}
-
-.platform-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  margin: 0 0 4px 0;
-  letter-spacing: 0.5px;
-}
-
-.platform-status {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.platform-cta {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--purple-light);
-  margin-top: 6px;
+.fab svg {
+  width: 32px;
+  height: 32px;
   transition: transform 0.3s ease;
 }
 
-.platform-card-web:hover .platform-cta,
-.platform-card-android:hover .platform-cta {
-  transform: translateX(4px);
+.fab-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.2;
+  min-width: 64px;
+  transition: color 0.3s ease;
+}
+
+.fab-status {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.fab-web,
+.fab-android {
+  cursor: pointer;
+}
+
+.fab-web:hover .fab-button,
+.fab-android:hover .fab-button {
+  transform: translateY(-6px) scale(1.08);
+  border-color: rgba(124,92,252,0.5);
+  box-shadow: 0 16px 48px rgba(124,92,252,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  background: linear-gradient(135deg, rgba(124,92,252,0.25), rgba(124,92,252,0.1));
+}
+
+.fab-web:hover .fab-button svg,
+.fab-android:hover .fab-button svg {
+  transform: scale(1.1);
+}
+
+.fab-web:hover .fab-label,
+.fab-android:hover .fab-label {
+  color: var(--purple-light);
+}
+
+.fab-web:hover .fab-status {
+  color: var(--purple-light);
+}
+
+/* Floating animation */
+@keyframes floatWeb {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes floatIos {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes floatAndroid {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+.fab-web {
+  animation: floatWeb 4s ease-in-out infinite;
+}
+
+.fab-ios {
+  animation: floatIos 4.5s ease-in-out infinite;
+}
+
+.fab-android {
+  animation: floatAndroid 3.8s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
-  .platforms-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .fab-container {
+    bottom: 20px;
+    right: 20px;
+    gap: 20px;
   }
 
-  .platform-card {
-    flex-direction: row;
-    padding: 16px;
+  .fab-button {
+    width: 56px;
+    height: 56px;
   }
 
-  .platform-icon {
-    width: 40px;
-    height: 40px;
+  .fab svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .fab-label {
+    font-size: 11px;
+    min-width: 56px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .platform-card {
+  .fab-web,
+  .fab-ios,
+  .fab-android {
     animation: none;
-    opacity: 1;
   }
 
-  .platform-card:hover {
+  .fab-web:hover .fab-button,
+  .fab-android:hover .fab-button {
     transform: none;
   }
 
-  .platform-card-web:hover .platform-cta,
-  .platform-card-android:hover .platform-cta {
+  .fab-web:hover .fab-button svg,
+  .fab-android:hover .fab-button svg {
     transform: none;
   }
 }
@@ -1986,55 +1834,7 @@ h2 {
   </div>
   <div class="footer-tagline">AI That Understands Your Money</div>
 
-  <!-- Platform Availability Section -->
-  <div class="platforms-section">
-    <div class="platforms-grid">
-      <!-- Web Card -->
-      <a href="https://app.getfynflow.com" class="platform-card platform-card-web">
-        <div class="platform-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M2 12h20"></path>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-        </div>
-        <div class="platform-content">
-          <h3 class="platform-name">Web</h3>
-          <p class="platform-status">Available Now</p>
-          <span class="platform-cta">Open Web App →</span>
-        </div>
-      </a>
-
-      <!-- iOS Card -->
-      <div class="platform-card platform-card-ios">
-        <div class="platform-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M12 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-          </svg>
-        </div>
-        <div class="platform-content">
-          <h3 class="platform-name">iOS</h3>
-          <p class="platform-status">Coming Soon</p>
-        </div>
-      </div>
-
-      <!-- Android Card -->
-      <a href="https://play.google.com/store/apps/details?id=com.ryzrstudios.fynflow&hl=en" target="_blank" class="platform-card platform-card-android">
-        <div class="platform-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11.5 23.33 11.5 22.5V19h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zm11.5-9h-13V4c0-.55.45-1 1-1h11c.55 0 1 .45 1 1v5zm-6-3.5c.83 0 1.5-.67 1.5-1.5S14.33 2 13.5 2 12 2.67 12 3.5s.67 1.5 1.5 1.5zm-5 0c.83 0 1.5-.67 1.5-1.5S9.33 2 8.5 2 7 2.67 7 3.5 7.67 5 8.5 5z"/>
-          </svg>
-        </div>
-        <div class="platform-content">
-          <h3 class="platform-name">Android</h3>
-          <p class="platform-status">Get it on Google Play</p>
-          <span class="platform-cta">Download →</span>
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 32px;">
+  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
     <div class="tech-pill" style="font-size: 12px;">🌍 Works globally</div>
     <div class="tech-pill" style="font-size: 12px;">🗣️ Multi-language AI</div>
     <div class="tech-pill" style="font-size: 12px;">💰 Multi-currency</div>
@@ -2055,35 +1855,42 @@ h2 {
   </div>
 </div>
 
-<!-- Floating Action Icons -->
+<!-- Floating Platform Buttons Section -->
 <div class="fab-container">
-  <!-- Google Play Button -->
-  <a href="https://play.google.com/store/apps/details?id=com.ryzrstudios.fynflow&hl=en" target="_blank" class="fab fab-android" title="Get on Google Play">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3 3l18 9-18 9V3z" fill="#EA4335"/>
-      <path d="M3 3l9 9-9 9V3z" fill="#FBBC04"/>
-      <path d="M12 12l9-9v18l-9-9z" fill="#34A853"/>
-      <path d="M12 12l6 6 3-3-9-3zm0 0l-6 6 3 3 9-3-6-6z" fill="#4285F4"/>
-    </svg>
-    <span class="fab-label">Google Play Store</span>
+  <!-- Web Platform Button -->
+  <a href="https://app.getfynflow.com" class="fab fab-web" aria-label="Access FynFlow on Web - Available Now">
+    <div class="fab-button">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M2 12h20"></path>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      </svg>
+    </div>
+    <div class="fab-label">Web</div>
+    <div class="fab-status">Available Now</div>
   </a>
 
-  <!-- Web App Button -->
-  <a href="https://app.getfynflow.com" class="fab fab-web" title="Open Web App">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"></circle>
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-    </svg>
-    <span class="fab-label">Open Web App</span>
-  </a>
-
-  <!-- Apple Button -->
-  <button class="fab fab-ios" disabled title="Coming Soon">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M12 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-    </svg>
-    <span class="fab-label">Coming Soon</span>
+  <!-- iOS Platform Button -->
+  <button class="fab fab-ios" disabled aria-label="FynFlow on iOS - Coming Soon">
+    <div class="fab-button">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M12 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+      </svg>
+    </div>
+    <div class="fab-label">iOS</div>
+    <div class="fab-status">Coming Soon</div>
   </button>
+
+  <!-- Android Platform Button -->
+  <a href="https://play.google.com/store/apps/details?id=com.ryzrstudios.fynflow&hl=en" target="_blank" class="fab fab-android" aria-label="Get FynFlow on Android - Available on Google Play">
+    <div class="fab-button">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5S11.5 23.33 11.5 22.5V19h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zm11.5-9h-13V4c0-.55.45-1 1-1h11c.55 0 1 .45 1 1v5zm-6-3.5c.83 0 1.5-.67 1.5-1.5S14.33 2 13.5 2 12 2.67 12 3.5s.67 1.5 1.5 1.5zm-5 0c.83 0 1.5-.67 1.5-1.5S9.33 2 8.5 2 7 2.67 7 3.5 7.67 5 8.5 5z"/>
+      </svg>
+    </div>
+    <div class="fab-label">Android</div>
+    <div class="fab-status">Google Play</div>
+  </a>
 </div>
 
 <script>
